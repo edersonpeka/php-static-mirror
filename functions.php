@@ -13,7 +13,7 @@ function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 1
     $md5 = md5( $url );
     $cachefile = $dir . $md5 . '.txt';
     $cachefileh = $dir . $md5 . '.header.txt';
-    if ( file_exists( $cachefile ) && ( !$exptime || date( 'U', filemtime( $cachefile ) ) > ( date('U') - $exptime ) ) ) {
+    if ( file_exists( $cachefile ) && $exptime && ( date( 'U', filemtime( $cachefile ) ) > ( date('U') - $exptime ) ) ) {
         $ret = file_get_contents( $cachefile );
         $header = file_get_contents( $cachefileh );
     } else {

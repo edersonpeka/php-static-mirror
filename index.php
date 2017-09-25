@@ -5,7 +5,15 @@ $uri = $_SERVER['REQUEST_URI'];
 $append_url = preg_replace( '|^' . preg_quote( $rel_this ) . '|ims', '', $uri );
 $url = $orig_home . $append_url;
 
-$cont = url_get_contents( $url, array( array( 'option' => CURLOPT_USERPWD, 'value' => $username . ':' . $password ) ), $timeout );
+$avoid_cache = false;
+$avoidqs = 'static-mirror-avoid-cache';
+if ( array_key_exists( $avoidqs, $_GET ) ) :
+    $avoid_cache = true;
+    $url = preg_replace( '|\?(.*)\&' . preg_quote( $avoidqs ) . '$|', '?$1', $url );
+    $url = preg_replace( '|\?' . preg_quote( $avoidqs ) . '$|', '', $url );
+endif;
+
+$cont = url_get_contents( $url, array( array( 'option' => CURLOPT_USERPWD, 'value' => $username . ':' . $password ) ), $avoid_cache ? 0 : $timeout );
 $req = $cont[ 'body' ];
 $header = $cont[ 'header' ];
 
