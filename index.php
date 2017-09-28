@@ -17,10 +17,11 @@ $cont = url_get_contents( $url, array( array( 'option' => CURLOPT_USERPWD, 'valu
 $req = $cont[ 'body' ];
 $header = $cont[ 'header' ];
 
-$do_replace = true;
+$do_replace = false;
 
 if ( array_key_exists( 'Content-Type', $header ) ) {
-    if ( strpos( 'text/', trim( $header[ 'Content-Type' ] ) ) === 0 ) $do_replace = true;
+    if ( strpos( trim( $header[ 'Content-Type' ] ), 'text/' ) === 0 ) $do_replace = true;
+    if ( strpos( trim( $header[ 'Content-Type' ] ), 'application/' ) === 0 ) $do_replace = true;
 }
 
 if ( $do_replace ) foreach ( $regexps as $regexp ) :
