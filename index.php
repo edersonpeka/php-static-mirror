@@ -20,8 +20,12 @@ $header = $cont[ 'header' ];
 $do_replace = false;
 
 if ( array_key_exists( 'Content-Type', $header ) ) {
-    if ( strpos( trim( $header[ 'Content-Type' ] ), 'text/' ) === 0 ) $do_replace = true;
-    if ( strpos( trim( $header[ 'Content-Type' ] ), 'application/' ) === 0 ) $do_replace = true;
+    foreach ( array( 'text/', 'javascript', 'html', 'xml' ) as $text_indicator ) {
+        if ( strpos( trim( $header[ 'Content-Type' ] ), $text_indicator ) !== false ) {
+            $do_replace = true;
+            break;
+        }
+    }
 }
 
 if ( $do_replace ) foreach ( $regexps as $regexp ) :
