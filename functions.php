@@ -32,12 +32,28 @@ function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 1
             $header_size = curl_getinfo( $ch, CURLINFO_HEADER_SIZE );
             $header = substr( $response, 0, $header_size );
             $ret = substr( $response, $header_size );
+            $httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
             curl_close( $ch );
         } else {
-            $ret = file_get_contents( $url );
-            $header = ''; // TODO: get header without curl
+            $context = null;
+            if ( is_array( $opts ) && count( $opts ) ) {
+                foreach ( $opts as $opt ) {
+                    if ( CURLOPT_USERPWD == $opt[ 'option' ] ) {
+                        $context = stream_context_create( array(
+                            'http' => array(
+                                'header' => 'Authorization: Basic ' . base64_encode( $opt[ 'value' ] ),
+                            ),
+                        ) );
+                    }
+                }
+            }
+            $ret = file_get_contents( $url, false, $context );
+            $header = implode( PHP_EOL, $http_response_header );
+            $httpcode = '';
+            preg_match( '|^HTTP/[\S]+\s+([\d]+)\s+|ms', $header, $m );
+            if ( count( $m ) > 1 ) $httpcode = $m[ 1 ];
         }
-        if ( $ret !== false && '' != trim( $ret ) && is_dir( $dir ) ) {
+        if ( ( 500 != $httpcode ) && ( $ret !== false ) && ( '' != trim( $ret ) ) && is_dir( $dir ) ) {
             file_put_contents( $cachefile, $ret );
             if ( $header ) file_put_contents( $cachefileh, $header );
         }
