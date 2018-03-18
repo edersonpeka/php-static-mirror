@@ -1,8 +1,7 @@
 <?php
 require_once( 'config.php' );
 
-function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 10 ) {
-    $exptime *= 3600;
+function get_cache_dir() {
     $dir = './cache/';
     if ( ( !is_dir( $dir) || !is_writable( $dir ) ) && is_writable( '.' ) )
         mkdir( $dir, 0664, true );
@@ -10,6 +9,12 @@ function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 1
         $dir = '/tmp/cachecurl/';
     if ( (!is_dir( $dir ) || !is_writable( $dir ) ) && is_writable( '/tmp/' ) )
         mkdir( $dir, 0664, true );
+    return $dir;
+}
+
+function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 10 ) {
+    $dir = get_cache_dir();
+    $exptime *= 3600;
     $md5 = md5( $url );
     $cachefile = $dir . $md5 . '.txt';
     $cachefileh = $dir . $md5 . '.header.txt';

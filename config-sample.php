@@ -6,6 +6,7 @@ $username = 'usuario';
 $password = 'senha';
 $timeout = 42;
 $avoidqs = 'static-mirror-avoid-cache';
+$clearqs = 'dramatic';
 $regexps = array(
     array(
         'from' => 'https?\:\/\/dominio\.com\/oculto',

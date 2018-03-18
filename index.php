@@ -10,6 +10,9 @@ if ( isset( $avoidqs ) && $avoidqs && array_key_exists( $avoidqs, $_GET ) ) :
     $avoid_cache = true;
     $url = preg_replace( '|\?(.*)\&' . preg_quote( $avoidqs ) . '$|', '?$1', $url );
     $url = preg_replace( '|\?' . preg_quote( $avoidqs ) . '$|', '', $url );
+    if ( isset( $clearqs ) && ( $clearqs == $_GET[ $avoidqs ] ) ) :
+        array_map( 'unlink', glob( get_cache_dir() . '*.txt' ) );
+    endif;
 endif;
 
 $cont = url_get_contents( $url, array( array( 'option' => CURLOPT_USERPWD, 'value' => $username . ':' . $password ) ), $avoid_cache ? 0 : $timeout );
