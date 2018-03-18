@@ -6,8 +6,7 @@ $append_url = preg_replace( '|^' . preg_quote( $rel_this ) . '|ims', '', $uri );
 $url = $orig_home . $append_url;
 
 $avoid_cache = false;
-$avoidqs = 'static-mirror-avoid-cache';
-if ( array_key_exists( $avoidqs, $_GET ) ) :
+if ( isset( $avoidqs ) && $avoidqs && array_key_exists( $avoidqs, $_GET ) ) :
     $avoid_cache = true;
     $url = preg_replace( '|\?(.*)\&' . preg_quote( $avoidqs ) . '$|', '?$1', $url );
     $url = preg_replace( '|\?' . preg_quote( $avoidqs ) . '$|', '', $url );

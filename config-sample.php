@@ -5,6 +5,7 @@ $orig_home = 'http://dominio.com/oculto/';
 $username = 'usuario';
 $password = 'senha';
 $timeout = 42;
+$avoidqs = 'static-mirror-avoid-cache';
 $regexps = array(
     array(
         'from' => 'https?\:\/\/dominio\.com\/oculto',
