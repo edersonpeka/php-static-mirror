@@ -1,4 +1,5 @@
 <?php
+if ( !file_exists( 'config.php' ) ) die( 'Configuration file not found.' );
 require_once( 'config.php' );
 
 function get_cache_dir() {
@@ -60,16 +61,21 @@ function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 1
         }
         if ( ( 500 != $httpcode ) && ( $ret !== false ) && ( '' != trim( $ret ) ) && is_dir( $dir ) ) {
             file_put_contents( $cachefile, $ret );
-            if ( $header ) file_put_contents( $cachefileh, $header );
+            if ( $header ) file_put_contents( $cachefileh, $httpcode . PHP_EOL . $header );
         }
     }
+    $httpcode = 200;
     $header = array_filter( explode( PHP_EOL, $header ) );
     $aux = array();
     foreach ( $header as $line ) {
         $parts = explode( ':', $line );
-        if ( $parts ) $aux[ array_shift( $parts ) ] = implode( ':', $parts );
+        if ( count( $parts ) > 1 ) {
+            $aux[ array_shift( $parts ) ] = implode( ':', $parts );
+        } elseif ( ( count( $parts ) == 1 ) && ( is_numeric( $parts[0] ) ) ) {
+            $httpcode = $parts[0];
+        }
     }
     $header = array_filter( $aux );
-    return array( 'header' => $header, 'body' => $ret );
+    return array( 'httpcode' => $httpcode, 'header' => $header, 'body' => $ret );
 }
 

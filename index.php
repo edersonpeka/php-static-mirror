@@ -18,6 +18,7 @@ endif;
 $cont = url_get_contents( $url, array( array( 'option' => CURLOPT_USERPWD, 'value' => $username . ':' . $password ) ), $avoid_cache ? 0 : $timeout );
 $req = $cont[ 'body' ];
 $header = $cont[ 'header' ];
+$httpcode = $cont[ 'httpcode' ];
 
 $do_replace = false;
 
@@ -30,13 +31,14 @@ if ( array_key_exists( 'Content-Type', $header ) ) {
     }
 }
 
-if ( $do_replace ) foreach ( $regexps as $regexp ) :
-    $req = preg_replace( '|' . $regexp[ 'from' ] . '|ims', $regexp[ 'to' ], $req );
+foreach ( $regexps as $regexp ) :
+    if ( $do_replace ) $req = preg_replace( '|' . $regexp[ 'from' ] . '|ims', $regexp[ 'to' ], $req );
+    foreach ( $header as $h_key => $h_val ) :
+        $header[ $h_key ] = preg_replace( '|' . $regexp[ 'from' ] . '|ims', $regexp[ 'to' ], $h_val );
+    endforeach;
 endforeach;
 
-foreach ( $header as $h_key => $h_val ) foreach ( $regexps as $regexp ) :
-    $header[ $h_key ] = preg_replace( '|' . $regexp[ 'from' ] . '|ims', $regexp[ 'to' ], $h_val );
-endforeach;
+if ( $httpcode && ( 200 != $httpcode ) ) http_response_code( $httpcode );
 
 foreach ( $header as $h_key => $h_val ) if ( in_array( $h_key, $copy_headers ) ) header( $h_key . ':' . $h_val );
 
