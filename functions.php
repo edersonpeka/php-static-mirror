@@ -2,6 +2,7 @@
 if ( !file_exists( 'config.php' ) ) die( 'Configuration file not found.' );
 require_once( 'config.php' );
 
+// detects cache directory
 function get_cache_dir() {
     $dir = './cache/';
     if ( ( !is_dir( $dir) || !is_writable( $dir ) ) && is_writable( '.' ) )
@@ -13,6 +14,7 @@ function get_cache_dir() {
     return $dir;
 }
 
+// fetches an URL content and keeps its copy
 function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 10 ) {
     $dir = get_cache_dir();
     $exptime *= 3600;
