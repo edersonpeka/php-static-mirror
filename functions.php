@@ -14,14 +14,31 @@ function get_cache_dir() {
     return $dir;
 }
 
+// tries to invalidate cache before this moment
+// if something goes wrong, tries to remove every cached file
+function expire_cache() {
+    $dir = get_cache_dir();
+    $tokenfile = $dir . 'token.txt';
+    $ret = touch( $tokenfile );
+    if ( !$ret ) {
+        $arr = array_unique( array_map( 'unlink', glob( get_cache_dir() . '*.txt' ) ) );
+        if ( count( $arr ) == 1 ) $ret = $arr[0];
+    }
+    return $ret;
+}
+
 // fetches an URL content and keeps its copy
 function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 10 ) {
     $dir = get_cache_dir();
     $exptime *= 3600;
     $md5 = md5( $url );
+    $tokenfile = $dir . 'token.txt';
     $cachefile = $dir . $md5 . '.txt';
     $cachefileh = $dir . $md5 . '.header.txt';
-    if ( file_exists( $cachefile ) && $exptime && ( date( 'U', filemtime( $cachefile ) ) > ( date('U') - $exptime ) ) ) {
+    $dt_token = file_exists( $tokenfile ) ? date( 'U', filemtime( $tokenfile ) ) : 0;
+    $dt_cached = file_exists( $cachefile ) ? date( 'U', filemtime( $cachefile ) ) : 0;
+    $dt_limit = date( 'U' ) - $exptime;
+    if ( file_exists( $cachefile ) && $exptime && ( $dt_cached > $dt_token ) && ( $dt_cached > $dt_limit ) ) {
         $ret = file_get_contents( $cachefile );
         $header = file_get_contents( $cachefileh );
     } else {

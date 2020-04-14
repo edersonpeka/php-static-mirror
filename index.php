@@ -16,7 +16,7 @@ if ( isset( $avoidqs ) && $avoidqs && array_key_exists( $avoidqs, $_GET ) ) :
     $url = preg_replace( '|\?' . preg_quote( $avoidqs ) . '$|', '', $url );
     // should we not just ignore the cached version, but wipe it as well?
     if ( isset( $clearqs ) && ( $clearqs == $_GET[ $avoidqs ] ) ) :
-        array_map( 'unlink', glob( get_cache_dir() . '*.txt' ) );
+        expire_cache();
     endif;
 endif;
 
