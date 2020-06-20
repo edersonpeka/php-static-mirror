@@ -42,5 +42,8 @@ $regexps = array(
     ),
 );
 
+// request headers to be copied from client when requesting original (dynamic)
+$copy_request = array( 'Accept', 'User-Agent', 'Accept-Language' );
+
 // headers to be preserved from original (dynamic) to copy (static)
 $copy_headers = array( 'Content-Type', 'Expires', 'Cache-Control', 'Pragma' );

@@ -21,7 +21,27 @@ if ( isset( $avoidqs ) && $avoidqs && array_key_exists( $avoidqs, $_GET ) ) :
 endif;
 
 // fetches the original URL or its cached copy (if not expired)
-$cont = url_get_contents( $url, array( array( 'option' => CURLOPT_USERPWD, 'value' => $username . ':' . $password ) ), $avoid_cache ? 0 : $timeout );
+$ops = array(
+    array(
+        'option' => CURLOPT_USERPWD,
+        'value' => $username . ':' . $password
+    )
+);
+if ( isset( $copy_request ) && is_array( $copy_request ) ) :
+    $hs = getallheaders();
+    $reqs = array();
+    foreach ( $copy_request as $cp ) :
+        $req = array_key_exists( $cp, $hs ) ? $cp . ': ' . $hs[ $cp ] : false;
+        if ( $req ) $reqs[] = $req;
+    endforeach;
+    if ( $reqs ) :
+        $ops[] = array(
+            'option' => CURLOPT_HTTPHEADER,
+            'value' => $reqs
+        );
+    endif;
+endif;
+$cont = url_get_contents( $url, $ops, $avoid_cache ? 0 : $timeout );
 // parts of the response
 $req = $cont[ 'body' ];
 $header = $cont[ 'header' ];
