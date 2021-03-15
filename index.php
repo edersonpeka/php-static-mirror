@@ -51,7 +51,7 @@ $httpcode = $cont[ 'httpcode' ];
 // (is it a textual response, not binary? are we able to handle it?)
 $do_replace = false;
 if ( array_key_exists( 'Content-Type', $header ) ) {
-    foreach ( array( 'text/', 'javascript', 'html', 'xml' ) as $text_indicator ) {
+    foreach ( array( 'text/', 'javascript', 'html', 'xml', 'json' ) as $text_indicator ) {
         if ( strpos( trim( $header[ 'Content-Type' ] ), $text_indicator ) !== false ) {
             $do_replace = true;
             break;
