@@ -78,9 +78,11 @@ function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 1
             preg_match( '|^HTTP/[\S]+\s+([\d]+)\s+|ms', $header, $m );
             if ( count( $m ) > 1 ) $httpcode = $m[ 1 ];
         }
-        if ( ( 500 != $httpcode ) && ( $ret !== false ) && ( '' != trim( $ret ) ) && is_dir( $dir ) ) {
+        if ( ( 500 != $httpcode ) && ( $ret !== false ) && ( '' != trim( $ret ) ) && is_dir( $dir ) && is_writeable( $cachefile ) ) {
             file_put_contents( $cachefile, $ret );
-            if ( $header ) file_put_contents( $cachefileh, $httpcode . PHP_EOL . $header );
+            if ( $header && is_writeable( $cachefileh ) ) {
+                file_put_contents( $cachefileh, $httpcode . PHP_EOL . $header );
+            }
         }
     }
     $httpcode = 200;
