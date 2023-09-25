@@ -4,8 +4,8 @@ require_once( 'config.php' );
 
 // detects cache directory
 function get_cache_dir() {
-    $dir = ltrim( __DIR__, '/' ) . '/cache/';
-    if ( ( !is_dir( $dir) || !is_writable( $dir ) ) && is_writable( __DIR__ ) )
+    $dir = rtrim( __DIR__, '/' ) . '/cache/';
+    if ( ( !is_dir( $dir ) || !is_writable( $dir ) ) && is_writable( __DIR__ ) )
         mkdir( $dir, 0664, true );
     if ( !is_dir( $dir ) || !is_writable( $dir ) )
         $dir = '/tmp/cachecurl/';
