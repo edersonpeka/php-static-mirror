@@ -47,12 +47,14 @@ $req = $cont[ 'body' ];
 $header = $cont[ 'header' ];
 $httpcode = $cont[ 'httpcode' ];
 
+$header = array_change_key_case( $header, CASE_LOWER );
+
 // should we replace the URLs in the response?
 // (is it a textual response, not binary? are we able to handle it?)
 $do_replace = false;
-if ( array_key_exists( 'Content-Type', $header ) ) {
+if ( array_key_exists( 'content-type', $header ) ) {
     foreach ( array( 'text/', 'javascript', 'html', 'xml', 'json' ) as $text_indicator ) {
-        if ( strpos( trim( $header[ 'Content-Type' ] ), $text_indicator ) !== false ) {
+        if ( strpos( trim( $header[ 'content-type' ] ), $text_indicator ) !== false ) {
             $do_replace = true;
             break;
         }
