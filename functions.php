@@ -4,8 +4,8 @@ require_once( 'config.php' );
 
 // detects cache directory
 function get_cache_dir() {
-    $dir = './cache/';
-    if ( ( !is_dir( $dir) || !is_writable( $dir ) ) && is_writable( '.' ) )
+    $dir = ltrim( __DIR __, '/' ) . '/cache/';
+    if ( ( !is_dir( $dir) || !is_writable( $dir ) ) && is_writable( __DIR__ ) )
         mkdir( $dir, 0664, true );
     if ( !is_dir( $dir ) || !is_writable( $dir ) )
         $dir = '/tmp/cachecurl/';
@@ -78,9 +78,9 @@ function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 1
             preg_match( '|^HTTP/[\S]+\s+([\d]+)\s+|ms', $header, $m );
             if ( count( $m ) > 1 ) $httpcode = $m[ 1 ];
         }
-        if ( ( 500 != $httpcode ) && ( $ret !== false ) && ( '' != trim( $ret ) ) && is_dir( $dir ) && is_writeable( $cachefile ) ) {
+        if ( ( 500 != $httpcode ) && ( $ret !== false ) && ( '' != trim( $ret ) ) && is_dir( $dir ) && is_writeable( $dir ) ) {
             file_put_contents( $cachefile, $ret );
-            if ( $header && is_writeable( $cachefileh ) ) {
+            if ( $header ) {
                 file_put_contents( $cachefileh, $httpcode . PHP_EOL . $header );
             }
         }
