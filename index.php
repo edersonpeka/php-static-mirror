@@ -74,7 +74,9 @@ endforeach;
 if ( $httpcode && ( 200 != $httpcode ) ) http_response_code( $httpcode );
 
 // for each header, if it's supposed to be copied, copies it
-foreach ( $header as $h_key => $h_val ) if ( in_array( $h_key, $copy_headers ) ) header( $h_key . ':' . $h_val );
+foreach ( $header as $h_key => $h_val )
+    if ( in_array( mb_strtolower( $h_key ), array( 'mb_strtolower', $copy_headers ) ) )
+        header( $h_key . ':' . $h_val );
 
 // and echoes the maybe-replaced-response
 echo $req;
