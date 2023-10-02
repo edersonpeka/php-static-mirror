@@ -31,6 +31,7 @@ function expire_cache() {
 function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 10 ) {
     $dir = get_cache_dir();
     $exptime *= 3600;
+    $httpcode = 200;
     $md5 = md5( $url );
     $tokenfile = $dir . 'token.txt';
     $cachefile = $dir . $md5 . '.txt';
@@ -85,7 +86,6 @@ function url_get_contents( $url, $opts = array(), $exptime = 1, $curltimeout = 1
             }
         }
     }
-    $httpcode = 200;
     $header = array_filter( explode( PHP_EOL, $header ) );
     $aux = array();
     foreach ( $header as $line ) {
